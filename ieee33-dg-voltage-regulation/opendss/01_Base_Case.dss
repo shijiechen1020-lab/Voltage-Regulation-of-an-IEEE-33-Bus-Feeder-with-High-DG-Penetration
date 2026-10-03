@@ -1,0 +1,26 @@
+! Scenario 1: base case, no distributed generation
+! One-way power flow; voltage sags along the long branches.
+
+! Network model (source, transformer, lines, loads)
+Redirect IEEE33_Network.dss
+
+! EnergyMeter at the feeder head: defines the feeder zone used by Interpolate and Plot Profile
+New EnergyMeter.M1 element=Line.L1 terminal=1
+
+! Solve the power flow
+Set Voltagebases=[110, 12.66]
+CalcVoltageBases
+Redirect BusCoords.dss
+Interpolate
+Solve
+
+! Export results as CSV (copy them to ../results for matlab/plot_results.m)
+Export Voltages   S1_Base_Voltages.csv
+Export Losses     S1_Base_Losses.csv
+Export Powers kVA S1_Base_Powers.csv
+
+! Plots and report (OpenDSS GUI)
+Plot Profile Phases=All
+Plot Circuit Power Max=1000 dots=y labels=y
+Summary
+Show Losses

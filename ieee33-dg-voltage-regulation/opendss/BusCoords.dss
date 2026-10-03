@@ -1,0 +1,36 @@
+! Bus coordinates for OpenDSS circuit and profile plots
+! Main feeder along the x-axis, laterals drawn vertically
+
+SetBusXY bus=1  x=0  y=0
+SetBusXY bus=2  x=1  y=0
+SetBusXY bus=3  x=2  y=0
+SetBusXY bus=4  x=3  y=0
+SetBusXY bus=5  x=4  y=0
+SetBusXY bus=6  x=5  y=0
+SetBusXY bus=7  x=6  y=0
+SetBusXY bus=8  x=7  y=0
+SetBusXY bus=9  x=8  y=0
+SetBusXY bus=10 x=9  y=0
+SetBusXY bus=11 x=10 y=0
+SetBusXY bus=12 x=11 y=0
+SetBusXY bus=13 x=12 y=0
+SetBusXY bus=14 x=13 y=0
+SetBusXY bus=15 x=14 y=0
+SetBusXY bus=16 x=15 y=0
+SetBusXY bus=17 x=16 y=0
+SetBusXY bus=18 x=17 y=0
+SetBusXY bus=19 x=1  y=1
+SetBusXY bus=20 x=1  y=2
+SetBusXY bus=21 x=1  y=3
+SetBusXY bus=22 x=1  y=4
+SetBusXY bus=23 x=2  y=-1
+SetBusXY bus=24 x=2  y=-2
+SetBusXY bus=25 x=2  y=-3
+SetBusXY bus=26 x=5  y=-1
+SetBusXY bus=27 x=5  y=-2
+SetBusXY bus=28 x=5  y=-3
+SetBusXY bus=29 x=5  y=-4
+SetBusXY bus=30 x=5  y=-5
+SetBusXY bus=31 x=5  y=-6
+SetBusXY bus=32 x=5  y=-7
+SetBusXY bus=33 x=5  y=-8

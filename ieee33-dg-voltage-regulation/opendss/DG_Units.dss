@@ -1,0 +1,11 @@
+! Distributed generation: four DG units, 2280 kW in total
+! DG penetration = 2280 / 3715 kW = 61.37 %
+
+! Large PV plant at the far end of the main feeder (bus 18).
+! Its output far exceeds local load, which drives reverse power flow and overvoltage.
+New Generator.PV_Industrial_Park Bus1=18 phases=3 kV=12.66 kW=1450 kvar=500 Model=1
+
+! Smaller distributed renewable sources
+New Generator.Biomass_Plant      Bus1=10 phases=3 kV=12.66 kW=310  kvar=60  Model=1
+New Generator.Mini_Hydro         Bus1=22 phases=3 kV=12.66 kW=280  kvar=50  Model=1
+New Generator.PV_Roof_Top        Bus1=25 phases=3 kV=12.66 kW=240  kvar=40  Model=1

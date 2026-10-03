@@ -1,0 +1,29 @@
+! Scenario 2: high DG penetration (61.37 %)
+! Four DG units connected; the large PV plant at bus 18 pushes its voltage above 1.05 p.u.
+
+! Network model (source, transformer, lines, loads)
+Redirect IEEE33_Network.dss
+
+! Four DG units at full output
+Redirect DG_Units.dss
+
+! EnergyMeter at the feeder head: defines the feeder zone used by Interpolate and Plot Profile
+New EnergyMeter.M1 element=Line.L1 terminal=1
+
+! Solve the power flow
+Set Voltagebases=[110, 12.66]
+CalcVoltageBases
+Redirect BusCoords.dss
+Interpolate
+Solve
+
+! Export results as CSV (copy them to ../results for matlab/plot_results.m)
+Export Voltages   S2_HighDG_Voltages.csv
+Export Losses     S2_HighDG_Losses.csv
+Export Powers kVA S2_HighDG_Powers.csv
+
+! Plots and report (OpenDSS GUI)
+Plot Profile Phases=All
+Plot Circuit Power Max=1000 dots=y labels=y
+Summary
+Show Losses

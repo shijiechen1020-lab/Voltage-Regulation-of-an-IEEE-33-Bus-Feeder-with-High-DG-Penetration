@@ -1,0 +1,35 @@
+! Scenario 3: Strategy 1, conventional local control
+! Curtail the bus-18 PV plant and add a shunt capacitor at the feeder end (bus 33).
+
+! Network model (source, transformer, lines, loads)
+Redirect IEEE33_Network.dss
+
+! Four DG units at full output
+Redirect DG_Units.dss
+
+! 1. Active-power curtailment: bus-18 PV output cut from 1450 kW to 800 kW
+Edit Generator.PV_Industrial_Park kW=800 kvar=100
+
+! 2. Reactive support: 600 kvar shunt capacitor at bus 33
+New Capacitor.Cap33 Bus1=33 phases=3 kVAR=600 kV=12.66
+
+! EnergyMeter at the feeder head: defines the feeder zone used by Interpolate and Plot Profile
+New EnergyMeter.M1 element=Line.L1 terminal=1
+
+! Solve the power flow
+Set Voltagebases=[110, 12.66]
+CalcVoltageBases
+Redirect BusCoords.dss
+Interpolate
+Solve
+
+! Export results as CSV (copy them to ../results for matlab/plot_results.m)
+Export Voltages   S3_Strategy1_Voltages.csv
+Export Losses     S3_Strategy1_Losses.csv
+Export Powers kVA S3_Strategy1_Powers.csv
+
+! Plots and report (OpenDSS GUI)
+Plot Profile Phases=All
+Plot Circuit Power Max=1000 dots=y labels=y
+Summary
+Show Losses

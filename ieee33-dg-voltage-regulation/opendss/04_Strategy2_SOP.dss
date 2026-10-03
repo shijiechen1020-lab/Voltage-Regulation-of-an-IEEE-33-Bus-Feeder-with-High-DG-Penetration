@@ -1,0 +1,36 @@
+! Scenario 4: Strategy 2, soft open point (SOP) between bus 18 and bus 33
+! No PV curtailment; the SOP moves surplus power from bus 18 to bus 33.
+! Modelled as two back-to-back generators with 2 % internal loss.
+
+! Network model (source, transformer, lines, loads)
+Redirect IEEE33_Network.dss
+
+! Four DG units at full output
+Redirect DG_Units.dss
+
+! Port A at bus 18: absorbs 500 kW (negative generation)
+New Generator.SOP_18 Bus1=18 phases=3 kV=12.66 kW=-500 kvar=-200 Model=1
+
+! Port B at bus 33: injects 490 kW (500 kW minus 10 kW converter loss)
+New Generator.SOP_33 Bus1=33 phases=3 kV=12.66 kW=490  kvar=150  Model=1
+
+! EnergyMeter at the feeder head: defines the feeder zone used by Interpolate and Plot Profile
+New EnergyMeter.M1 element=Line.L1 terminal=1
+
+! Solve the power flow
+Set Voltagebases=[110, 12.66]
+CalcVoltageBases
+Redirect BusCoords.dss
+Interpolate
+Solve
+
+! Export results as CSV (copy them to ../results for matlab/plot_results.m)
+Export Voltages   S4_SOP_Voltages.csv
+Export Losses     S4_SOP_Losses.csv
+Export Powers kVA S4_SOP_Powers.csv
+
+! Plots and report (OpenDSS GUI)
+Plot Profile Phases=All
+Plot Circuit Power Max=1000 dots=y labels=y
+Summary
+Show Losses

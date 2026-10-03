@@ -1,0 +1,91 @@
+! IEEE 33-bus distribution feeder: shared network model
+! 110 kV grid -> 110/12.66 kV substation transformer -> radial 12.66 kV feeder
+! Line impedances (ohm) and loads follow the standard IEEE 33-bus test case.
+! Every scenario file starts with "Redirect IEEE33_Network.dss".
+
+Clear
+Set DefaultBaseFrequency=50
+
+! 1. Source: upstream 110 kV grid, 1.05 p.u. behind the default source impedance
+!    (about 1.049 p.u. at SourceBus under load), to give voltage headroom
+New Circuit.SmartGrid33 bus1=SourceBus basekv=110 pu=1.05 phases=3 Angle=0
+
+! 2. Substation transformer: 110/12.66 kV, 5000 kVA, 8% reactance, 0.2% no-load loss.
+!    %R=0.5 applies to winding 2 only; winding 1 keeps the 0.2% default (0.7% in total).
+New Transformer.SubTrans Phases=3 Windings=2 Buses=(SourceBus, 1) Conns=(wye, wye) kVs=(110, 12.66) kVAs=(5000, 5000) XHL=8.0 %R=0.5 %noloadloss=0.2
+
+! 3. Lines (32 branches)
+! --- Main feeder (buses 1-18) ---
+New Line.L1   Bus1=1  Bus2=2  phases=3 r1=0.0922 x1=0.0470 length=1
+New Line.L2   Bus1=2  Bus2=3  phases=3 r1=0.4930 x1=0.2511 length=1
+New Line.L3   Bus1=3  Bus2=4  phases=3 r1=0.3660 x1=0.1864 length=1
+New Line.L4   Bus1=4  Bus2=5  phases=3 r1=0.3811 x1=0.1941 length=1
+New Line.L5   Bus1=5  Bus2=6  phases=3 r1=0.8190 x1=0.7070 length=1
+New Line.L6   Bus1=6  Bus2=7  phases=3 r1=0.1872 x1=0.6188 length=1
+New Line.L7   Bus1=7  Bus2=8  phases=3 r1=0.7114 x1=0.2351 length=1
+New Line.L8   Bus1=8  Bus2=9  phases=3 r1=1.0300 x1=0.7400 length=1
+New Line.L9   Bus1=9  Bus2=10 phases=3 r1=1.0440 x1=0.7400 length=1
+New Line.L10  Bus1=10 Bus2=11 phases=3 r1=0.1966 x1=0.0650 length=1
+New Line.L11  Bus1=11 Bus2=12 phases=3 r1=0.3744 x1=0.1238 length=1
+New Line.L12  Bus1=12 Bus2=13 phases=3 r1=1.4680 x1=1.1550 length=1
+New Line.L13  Bus1=13 Bus2=14 phases=3 r1=0.5416 x1=0.7129 length=1
+New Line.L14  Bus1=14 Bus2=15 phases=3 r1=0.5910 x1=0.5260 length=1
+New Line.L15  Bus1=15 Bus2=16 phases=3 r1=0.7463 x1=0.5450 length=1
+New Line.L16  Bus1=16 Bus2=17 phases=3 r1=1.2890 x1=1.7210 length=1
+New Line.L17  Bus1=17 Bus2=18 phases=3 r1=0.7320 x1=0.5740 length=1
+
+! --- Lateral 1 (bus 2 to 22) ---
+New Line.L18  Bus1=2  Bus2=19 phases=3 r1=0.1640 x1=0.1565 length=1
+New Line.L19  Bus1=19 Bus2=20 phases=3 r1=1.5042 x1=1.3554 length=1
+New Line.L20  Bus1=20 Bus2=21 phases=3 r1=0.4095 x1=0.4784 length=1
+New Line.L21  Bus1=21 Bus2=22 phases=3 r1=0.7089 x1=0.9373 length=1
+
+! --- Lateral 2 (bus 3 to 25) ---
+New Line.L22  Bus1=3  Bus2=23 phases=3 r1=0.4512 x1=0.3083 length=1
+New Line.L23  Bus1=23 Bus2=24 phases=3 r1=0.8980 x1=0.7091 length=1
+New Line.L24  Bus1=24 Bus2=25 phases=3 r1=0.8960 x1=0.7011 length=1
+
+! --- Lateral 3 (bus 6 to 33) ---
+New Line.L25  Bus1=6  Bus2=26 phases=3 r1=0.2030 x1=0.1034 length=1
+New Line.L26  Bus1=26 Bus2=27 phases=3 r1=0.2842 x1=0.1447 length=1
+New Line.L27  Bus1=27 Bus2=28 phases=3 r1=1.0590 x1=0.9337 length=1
+New Line.L28  Bus1=28 Bus2=29 phases=3 r1=0.8042 x1=0.7006 length=1
+New Line.L29  Bus1=29 Bus2=30 phases=3 r1=0.5075 x1=0.2585 length=1
+New Line.L30  Bus1=30 Bus2=31 phases=3 r1=0.9744 x1=0.9630 length=1
+New Line.L31  Bus1=31 Bus2=32 phases=3 r1=0.3105 x1=0.3619 length=1
+New Line.L32  Bus1=32 Bus2=33 phases=3 r1=0.3410 x1=0.5302 length=1
+
+! 4. Loads: 3715 kW / 2300 kvar nominal. Model=1 is constant P and Q between
+!    0.95 and 1.05 p.u. (default Vminpu/Vmaxpu) and constant impedance outside.
+New Load.L2  Bus1=2  phases=3 kV=12.66 kW=100 kvar=60  Model=1
+New Load.L3  Bus1=3  phases=3 kV=12.66 kW=90  kvar=40  Model=1
+New Load.L4  Bus1=4  phases=3 kV=12.66 kW=120 kvar=80  Model=1
+New Load.L5  Bus1=5  phases=3 kV=12.66 kW=60  kvar=30  Model=1
+New Load.L6  Bus1=6  phases=3 kV=12.66 kW=60  kvar=20  Model=1
+New Load.L7  Bus1=7  phases=3 kV=12.66 kW=200 kvar=100 Model=1
+New Load.L8  Bus1=8  phases=3 kV=12.66 kW=200 kvar=100 Model=1
+New Load.L9  Bus1=9  phases=3 kV=12.66 kW=60  kvar=20  Model=1
+New Load.L10 Bus1=10 phases=3 kV=12.66 kW=60  kvar=20  Model=1
+New Load.L11 Bus1=11 phases=3 kV=12.66 kW=45  kvar=30  Model=1
+New Load.L12 Bus1=12 phases=3 kV=12.66 kW=60  kvar=35  Model=1
+New Load.L13 Bus1=13 phases=3 kV=12.66 kW=60  kvar=35  Model=1
+New Load.L14 Bus1=14 phases=3 kV=12.66 kW=120 kvar=80  Model=1
+New Load.L15 Bus1=15 phases=3 kV=12.66 kW=60  kvar=10  Model=1
+New Load.L16 Bus1=16 phases=3 kV=12.66 kW=60  kvar=20  Model=1
+New Load.L17 Bus1=17 phases=3 kV=12.66 kW=60  kvar=20  Model=1
+New Load.L18 Bus1=18 phases=3 kV=12.66 kW=90  kvar=40  Model=1
+New Load.L19 Bus1=19 phases=3 kV=12.66 kW=90  kvar=40  Model=1
+New Load.L20 Bus1=20 phases=3 kV=12.66 kW=90  kvar=40  Model=1
+New Load.L21 Bus1=21 phases=3 kV=12.66 kW=90  kvar=40  Model=1
+New Load.L22 Bus1=22 phases=3 kV=12.66 kW=90  kvar=40  Model=1
+New Load.L23 Bus1=23 phases=3 kV=12.66 kW=90  kvar=50  Model=1
+New Load.L24 Bus1=24 phases=3 kV=12.66 kW=420 kvar=200 Model=1
+New Load.L25 Bus1=25 phases=3 kV=12.66 kW=420 kvar=200 Model=1
+New Load.L26 Bus1=26 phases=3 kV=12.66 kW=60  kvar=25  Model=1
+New Load.L27 Bus1=27 phases=3 kV=12.66 kW=60  kvar=25  Model=1
+New Load.L28 Bus1=28 phases=3 kV=12.66 kW=60  kvar=20  Model=1
+New Load.L29 Bus1=29 phases=3 kV=12.66 kW=120 kvar=70  Model=1
+New Load.L30 Bus1=30 phases=3 kV=12.66 kW=200 kvar=600 Model=1
+New Load.L31 Bus1=31 phases=3 kV=12.66 kW=150 kvar=70  Model=1
+New Load.L32 Bus1=32 phases=3 kV=12.66 kW=210 kvar=100 Model=1
+New Load.L33 Bus1=33 phases=3 kV=12.66 kW=60  kvar=40  Model=1
